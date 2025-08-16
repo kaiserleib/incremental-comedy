@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incremental Comedy</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>🎭 Incremental Comedy</h1>
+            <p class="subtitle">Build the world's greatest comedy empire!</p>
+        </header>
+        
+        <div class="stats-panel">
+            <div class="stat">
+                <span class="stat-label">Laughs:</span>
+                <span id="laughs" class="stat-value">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Laughs per second:</span>
+                <span id="lps" class="stat-value">0</span>
+            </div>
+        </div>
+        
+        <div class="upgrades-panel">
+            <h2>Upgrades</h2>
+            <div class="upgrade" id="joke-writer">
+                <h3>Joke Writer</h3>
+                <p>Writes jokes automatically</p>
+                <div class="upgrade-info">
+                    <span>Owned: <span id="joke-writer-count">0</span></span>
+                    <span>Cost: <span id="joke-writer-cost">10</span> laughs</span>
+                </div>
+                <button class="upgrade-btn" onclick="buyUpgrade('joke-writer')">Hire Joke Writer</button>
+            </div>
+            
+            <div class="upgrade" id="comedy-club">
+                <h3>Comedy Club</h3>
+                <p>Hosts comedy shows</p>
+                <div class="upgrade-info">
+                    <span>Owned: <span id="comedy-club-count">0</span></span>
+                    <span>Cost: <span id="comedy-club-cost">50</span> laughs</span>
+                </div>
+                <button class="upgrade-btn" onclick="buyUpgrade('comedy-club')">Build Comedy Club</button>
+            </div>
+            
+            <div class="upgrade" id="tv-show">
+                <h3>TV Show</h3>
+                <p>Reaches millions of viewers</p>
+                <div class="upgrade-info">
+                    <span>Owned: <span id="tv-show-count">0</span></span>
+                    <span>Cost: <span id="tv-show-cost">500</span> laughs</span>
+                </div>
+                <button class="upgrade-btn" onclick="buyUpgrade('tv-show')">Launch TV Show</button>
+            </div>
+        </div>
+        
+        <div class="actions-panel">
+            <h2>Actions</h2>
+            <button class="action-btn" onclick="tellJoke()">Tell a Joke</button>
+            <button class="action-btn" onclick="saveGame()">Save Game</button>
+            <button class="action-btn" onclick="loadGame()">Load Game</button>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html> 
