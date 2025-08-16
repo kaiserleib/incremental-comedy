@@ -1,28 +1,49 @@
-# 🎭 Incremental Comedy
+# 🎭 Comedy Career
 
-A fun incremental/idle game where you build your comedy empire from telling jokes to running TV shows!
+A strategic incremental game where you build your comedy career from open mic nights to becoming a comedy legend!
 
 ## 🎮 How to Play
 
-- **Tell a Joke**: Click the "Tell a Joke" button to earn laughs manually
-- **Hire Joke Writers**: Automatically generate laughs over time
-- **Build Comedy Clubs**: Increase your laugh production
-- **Launch TV Shows**: Reach millions of viewers for massive laugh generation
+### **Resources to Manage:**
+- **Money**: Your primary currency for investments and expenses
+- **Minutes of Material**: Jokes and routines you've developed
+- **Laughs per Minute**: How funny your material is
+- **Followers**: Your social media presence and fan base
+
+### **Career Activities:**
+- **Day Job**: Earn steady income while pursuing comedy
+- **Open Mic Nights**: Practice and develop new material ($5)
+- **Comedy Classes**: Improve your material quality ($50)
+- **Writing Time**: Dedicate time to creating new jokes ($20)
+- **Social Media Posts**: Grow your following ($2)
+- **Viral Content**: Create content that spreads quickly ($100)
+- **Paid Gigs**: Perform at paid shows (requires 10 min material)
+- **Comedy Festivals**: Showcase at major events (requires 30 min material)
 
 ## 🚀 Features
 
-- **Incremental Gameplay**: Classic idle game mechanics with exponential growth
+- **Multiple Currencies**: Manage money, material, quality, and followers
+- **Career Progression**: Advance from Open Mic Comedian to Comedy Legend
+- **Strategic Choices**: Balance day job income with comedy investments
+- **Material Management**: Use your developed material to earn money
+- **Social Media Growth**: Build your online presence
 - **Auto-save**: Your progress is automatically saved every 30 seconds
-- **Responsive Design**: Works great on desktop and mobile devices
-- **Visual Feedback**: Smooth animations and hover effects
-- **Easter Eggs**: Random jokes appear when you manually tell jokes!
+- **Universal Paperclips Style**: Clean, minimalist UI with monospace fonts
+
+## 🎯 Career Levels
+
+1. **Open Mic Comedian** (Starting level)
+2. **Paid Comedian** (Earn $1,000)
+3. **Professional Comedian** (Earn $5,000)
+4. **Headliner** (Earn $20,000)
+5. **Comedy Legend** (Earn $100,000)
 
 ## 🛠️ Setup
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/incremental-comedy.git
-   cd incremental-comedy
+   git clone https://github.com/kaiserleib/comedy-career.git
+   cd comedy-career
    ```
 
 2. **Open in your browser**:
@@ -48,15 +69,27 @@ This game is designed to work perfectly with GitHub Pages:
 1. Push your code to GitHub
 2. Enable GitHub Pages in your repository settings
 3. Select "Deploy from a branch" → "main" branch → "/ (root)"
-4. Your game will be available at `https://YOUR_USERNAME.github.io/incremental-comedy`
+4. Your game will be available at `https://YOUR_USERNAME.github.io/comedy-career`
 
-## 🎨 Customization
+## 🎨 Game Strategy
 
-The game is built with vanilla HTML, CSS, and JavaScript, making it easy to customize:
+### **Early Game:**
+- Start your day job for steady income
+- Attend open mic nights to build material
+- Take comedy classes to improve quality
+- Use social media to grow followers
 
-- **Add new upgrades**: Modify the `upgrades` object in `game.js`
-- **Change colors**: Update the CSS variables in `styles.css`
-- **Add new features**: Extend the game logic in `game.js`
+### **Mid Game:**
+- Balance material development with performance
+- Perform at paid gigs to earn money
+- Invest in viral content for follower growth
+- Continue improving your material quality
+
+### **Late Game:**
+- Perform at comedy festivals for big payouts
+- Focus on high-quality material development
+- Build a strong social media presence
+- Achieve comedy legend status
 
 ## 📱 Browser Support
 
@@ -67,10 +100,15 @@ The game is built with vanilla HTML, CSS, and JavaScript, making it easy to cust
 
 ## 🎯 Game Balance
 
-The game is balanced for a satisfying progression curve:
-- **Joke Writer**: 0.1 laughs/second, costs 10 laughs (scales by 1.15x)
-- **Comedy Club**: 1 laugh/second, costs 50 laughs (scales by 1.15x)
-- **TV Show**: 10 laughs/second, costs 500 laughs (scales by 1.15x)
+The game features balanced progression with:
+- **Day Job**: $0.01 per second (steady income)
+- **Open Mic**: $5 for 1 minute material (10% cost increase)
+- **Comedy Classes**: $50 for +0.1 laughs/minute (20% cost increase)
+- **Writing Time**: $20 for 5 minutes material (15% cost increase)
+- **Social Posts**: $2 for +5 followers (5% cost increase)
+- **Viral Content**: $100 for +50 followers (30% cost increase)
+- **Paid Gigs**: 10 min material for $25
+- **Festivals**: 30 min material for $200
 
 ## 🤝 Contributing
 
@@ -82,4 +120,4 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-**Have fun building your comedy empire! 🎭✨** 
+**Start your comedy career today and become a legend! 🎭✨** 

@@ -3,88 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Incremental Comedy</title>
+    <title>Comedy Career</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="game-container">
         <header class="game-header">
-            <h1>Incremental Comedy</h1>
-            <p class="subtitle">Build the world's greatest comedy empire!</p>
+            <h1>Comedy Career</h1>
+            <p class="subtitle">Build your career from open mic to headliner!</p>
         </header>
         
         <div class="section">
-            <h2>Statistics</h2>
+            <h2>Resources</h2>
             <div class="section-content">
                 <div class="stat">
-                    <span class="stat-label">Total Laughs:</span>
-                    <span id="laughs" class="stat-value">0</span>
+                    <span class="stat-label">Money:</span>
+                    <span id="money" class="stat-value">$0</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-label">Laughs per Second:</span>
-                    <span id="lps" class="stat-value">0</span>
+                    <span class="stat-label">Minutes of Material:</span>
+                    <span id="material" class="stat-value">0</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-label">Total Jokes Told:</span>
-                    <span id="jokes-told" class="stat-value">0</span>
+                    <span class="stat-label">Laughs per Minute:</span>
+                    <span id="laughs-per-minute" class="stat-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Followers:</span>
+                    <span id="followers" class="stat-value">0</span>
                 </div>
             </div>
         </div>
         
         <div class="section">
-            <h2>Manual Actions</h2>
+            <h2>Income</h2>
             <div class="section-content">
-                <div class="btn-group">
-                    <button class="action-btn" onclick="tellJoke()">Tell a Joke</button>
-                    <button class="action-btn" onclick="saveGame()">Save Game</button>
-                    <button class="action-btn" onclick="loadGame()">Load Game</button>
+                <div class="stat">
+                    <span class="stat-label">Money per Second:</span>
+                    <span id="money-per-second" class="stat-value">$0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Material per Second:</span>
+                    <span id="material-per-second" class="stat-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Followers per Second:</span>
+                    <span id="followers-per-second" class="stat-value">0</span>
                 </div>
             </div>
         </div>
         
         <div class="section">
-            <h2>Comedy Production</h2>
+            <h2>Day Job</h2>
             <div class="section-content">
-                <div class="upgrade" id="joke-writer">
-                    <h3>Joke Writer</h3>
-                    <p>Writes jokes automatically</p>
+                <div class="upgrade" id="day-job">
+                    <h3>Day Job</h3>
+                    <p>Earn steady income while pursuing comedy</p>
                     <div class="upgrade-info">
-                        <span>Owned: <span id="joke-writer-count">0</span></span>
-                        <span>Cost: <span id="joke-writer-cost" class="cost">10</span> laughs</span>
+                        <span>Status: <span id="day-job-status" class="status">OFF</span></span>
+                        <span>Pay: <span class="cost">$0.01</span> per second</span>
                     </div>
+                    <button class="upgrade-btn" onclick="toggleDayJob()">Start Day Job</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Comedy Development</h2>
+            <div class="section-content">
+                <div class="upgrade" id="open-mic">
+                    <h3>Open Mic Nights</h3>
+                    <p>Practice and develop new material</p>
                     <div class="upgrade-info">
-                        <span>Production: <span class="production">0.1</span> laughs/sec each</span>
-                        <span>Total: <span id="joke-writer-total" class="production">0</span> laughs/sec</span>
+                        <span>Cost: <span id="open-mic-cost" class="cost">$5</span></span>
+                        <span>Material Gain: <span class="production">1</span> minute</span>
                     </div>
-                    <button class="upgrade-btn" onclick="buyUpgrade('joke-writer')">Hire Joke Writer</button>
+                    <button class="upgrade-btn" onclick="attendOpenMic()">Attend Open Mic</button>
                 </div>
                 
-                <div class="upgrade" id="comedy-club">
-                    <h3>Comedy Club</h3>
-                    <p>Hosts comedy shows</p>
+                <div class="upgrade" id="comedy-classes">
+                    <h3>Comedy Classes</h3>
+                    <p>Learn techniques to improve your material</p>
                     <div class="upgrade-info">
-                        <span>Owned: <span id="comedy-club-count">0</span></span>
-                        <span>Cost: <span id="comedy-club-cost" class="cost">50</span> laughs</span>
+                        <span>Cost: <span id="comedy-classes-cost" class="cost">$50</span></span>
+                        <span>Laughs per Minute: <span class="production">+0.1</span></span>
                     </div>
-                    <div class="upgrade-info">
-                        <span>Production: <span class="production">1</span> laugh/sec each</span>
-                        <span>Total: <span id="comedy-club-total" class="production">0</span> laughs/sec</span>
-                    </div>
-                    <button class="upgrade-btn" onclick="buyUpgrade('comedy-club')">Build Comedy Club</button>
+                    <button class="upgrade-btn" onclick="takeComedyClass()">Take Comedy Class</button>
                 </div>
                 
-                <div class="upgrade" id="tv-show">
-                    <h3>TV Show</h3>
-                    <p>Reaches millions of viewers</p>
+                <div class="upgrade" id="writing-time">
+                    <h3>Writing Time</h3>
+                    <p>Dedicate time to writing new jokes</p>
                     <div class="upgrade-info">
-                        <span>Owned: <span id="tv-show-count">0</span></span>
-                        <span>Cost: <span id="tv-show-cost" class="cost">500</span> laughs</span>
+                        <span>Cost: <span id="writing-time-cost" class="cost">$20</span></span>
+                        <span>Material Gain: <span class="production">5</span> minutes</span>
                     </div>
+                    <button class="upgrade-btn" onclick="writeMaterial()">Write Material</span></button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Social Media</h2>
+            <div class="section-content">
+                <div class="upgrade" id="social-post">
+                    <h3>Social Media Posts</h3>
+                    <p>Share jokes and grow your following</p>
                     <div class="upgrade-info">
-                        <span>Production: <span class="production">10</span> laughs/sec each</span>
-                        <span>Total: <span id="tv-show-total" class="production">0</span> laughs/sec</span>
+                        <span>Cost: <span id="social-post-cost" class="cost">$2</span></span>
+                        <span>Followers Gain: <span class="production">+5</span></span>
                     </div>
-                    <button class="upgrade-btn" onclick="buyUpgrade('tv-show')">Launch TV Show</button>
+                    <button class="upgrade-btn" onclick="makeSocialPost()">Make Social Post</button>
+                </div>
+                
+                <div class="upgrade" id="viral-content">
+                    <h3>Viral Content</h3>
+                    <p>Create content that spreads quickly</p>
+                    <div class="upgrade-info">
+                        <span>Cost: <span id="viral-content-cost" class="cost">$100</span></span>
+                        <span>Followers Gain: <span class="production">+50</span></span>
+                    </div>
+                    <button class="upgrade-btn" onclick="createViralContent()">Create Viral Content</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Performance</h2>
+            <div class="section-content">
+                <div class="upgrade" id="paid-gig">
+                    <h3>Paid Gigs</h3>
+                    <p>Perform at paid comedy shows</p>
+                    <div class="upgrade-info">
+                        <span>Requires: <span class="cost">10 minutes material</span></span>
+                        <span>Pay: <span class="production">$25</span></span>
+                    </div>
+                    <button class="upgrade-btn" onclick="performPaidGig()">Perform Paid Gig</button>
+                </div>
+                
+                <div class="upgrade" id="comedy-festival">
+                    <h3>Comedy Festival</h3>
+                    <p>Showcase at major comedy events</p>
+                    <div class="upgrade-info">
+                        <span>Requires: <span class="cost">30 minutes material</span></span>
+                        <span>Pay: <span class="production">$200</span></span>
+                    </div>
+                    <button class="upgrade-btn" onclick="performAtFestival()">Perform at Festival</button>
                 </div>
             </div>
         </div>
@@ -101,8 +165,8 @@
                     <span id="last-save" class="stat-value">Never</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-label">Game Version:</span>
-                    <span class="stat-value">1.0.0</span>
+                    <span class="stat-label">Career Level:</span>
+                    <span id="career-level" class="stat-value">Open Mic Comedian</span>
                 </div>
             </div>
         </div>
