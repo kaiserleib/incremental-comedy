@@ -32,6 +32,10 @@
                     <span class="stat-label">Followers:</span>
                     <span id="followers" class="stat-value">0</span>
                 </div>
+                <div class="stat">
+                    <span class="stat-label">Available Time:</span>
+                    <span id="available-time" class="stat-value">100%</span>
+                </div>
             </div>
         </div>
         
@@ -56,14 +60,60 @@
         <div class="section">
             <h2>Day Job</h2>
             <div class="section-content">
-                <div class="upgrade" id="day-job">
-                    <h3>Day Job</h3>
-                    <p>Earn steady income while pursuing comedy</p>
+                <div class="upgrade" id="uber-driver">
+                    <h3>Uber Driver</h3>
+                    <p>Flexible schedule, low pay, maximum comedy time</p>
                     <div class="upgrade-info">
-                        <span>Status: <span id="day-job-status" class="status">OFF</span></span>
-                        <span>Pay: <span class="cost">$0.01</span> per second</span>
+                        <span>Status: <span id="uber-status" class="status off">OFF</span></span>
+                        <span>Pay: <span class="cost">$0.005</span> per second</span>
                     </div>
-                    <button class="upgrade-btn" onclick="toggleDayJob()">Start Day Job</button>
+                    <div class="upgrade-info">
+                        <span>Time Required: <span class="production">20%</span></span>
+                        <span>Comedy Time: <span class="production">80%</span></span>
+                    </div>
+                    <button class="upgrade-btn" onclick="switchJob('uber')">Become Uber Driver</button>
+                </div>
+                
+                <div class="upgrade" id="coffee-shop">
+                    <h3>Coffee Shop</h3>
+                    <p>Regular hours, moderate pay, some comedy time</p>
+                    <div class="upgrade-info">
+                        <span>Status: <span id="coffee-status" class="status off">OFF</span></span>
+                        <span>Pay: <span class="cost">$0.015</span> per second</span>
+                    </div>
+                    <div class="upgrade-info">
+                        <span>Time Required: <span class="production">50%</span></span>
+                        <span>Comedy Time: <span class="production">50%</span></span>
+                    </div>
+                    <button class="upgrade-btn" onclick="switchJob('coffee')">Work at Coffee Shop</button>
+                </div>
+                
+                <div class="upgrade" id="office-job">
+                    <h3>Office Job</h3>
+                    <p>Professional career, high pay, limited comedy time</p>
+                    <div class="upgrade-info">
+                        <span>Status: <span id="office-status" class="status off">OFF</span></span>
+                        <span>Pay: <span class="cost">$0.05</span> per second</span>
+                    </div>
+                    <div class="upgrade-info">
+                        <span>Time Required: <span class="production">80%</span></span>
+                        <span>Comedy Time: <span class="production">20%</span></span>
+                    </div>
+                    <button class="upgrade-btn" onclick="switchJob('office')">Get Office Job</button>
+                </div>
+                
+                <div class="upgrade" id="unemployed">
+                    <h3>Unemployed</h3>
+                    <p>No income, maximum comedy time</p>
+                    <div class="upgrade-info">
+                        <span>Status: <span id="unemployed-status" class="status off">OFF</span></span>
+                        <span>Pay: <span class="cost">$0</span> per second</span>
+                    </div>
+                    <div class="upgrade-info">
+                        <span>Time Required: <span class="production">0%</span></span>
+                        <span>Comedy Time: <span class="production">100%</span></span>
+                    </div>
+                    <button class="upgrade-btn" onclick="switchJob('unemployed')">Quit Job</button>
                 </div>
             </div>
         </div>
@@ -78,6 +128,10 @@
                         <span>Cost: <span id="open-mic-cost" class="cost">$5</span></span>
                         <span>Material Gain: <span class="production">1</span> minute</span>
                     </div>
+                    <div class="upgrade-info">
+                        <span>Time Required: <span class="production">10%</span></span>
+                        <span>Available: <span id="open-mic-available" class="status">Yes</span></span>
+                    </div>
                     <button class="upgrade-btn" onclick="attendOpenMic()">Attend Open Mic</button>
                 </div>
                 
@@ -87,6 +141,10 @@
                     <div class="upgrade-info">
                         <span>Cost: <span id="comedy-classes-cost" class="cost">$50</span></span>
                         <span>Laughs per Minute: <span class="production">+0.1</span></span>
+                    </div>
+                    <div class="upgrade-info">
+                        <span>Time Required: <span class="production">15%</span></span>
+                        <span>Available: <span id="comedy-classes-available" class="status">Yes</span></span>
                     </div>
                     <button class="upgrade-btn" onclick="takeComedyClass()">Take Comedy Class</button>
                 </div>
@@ -98,7 +156,11 @@
                         <span>Cost: <span id="writing-time-cost" class="cost">$20</span></span>
                         <span>Material Gain: <span class="production">5</span> minutes</span>
                     </div>
-                    <button class="upgrade-btn" onclick="writeMaterial()">Write Material</span></button>
+                    <div class="upgrade-info">
+                        <span>Time Required: <span class="production">25%</span></span>
+                        <span>Available: <span id="writing-time-available" class="status">Yes</span></span>
+                    </div>
+                    <button class="upgrade-btn" onclick="writeMaterial()">Write Material</button>
                 </div>
             </div>
         </div>
@@ -113,6 +175,10 @@
                         <span>Cost: <span id="social-post-cost" class="cost">$2</span></span>
                         <span>Followers Gain: <span class="production">+5</span></span>
                     </div>
+                    <div class="upgrade-info">
+                        <span>Time Required: <span class="production">5%</span></span>
+                        <span>Available: <span id="social-post-available" class="status">Yes</span></span>
+                    </div>
                     <button class="upgrade-btn" onclick="makeSocialPost()">Make Social Post</button>
                 </div>
                 
@@ -122,6 +188,10 @@
                     <div class="upgrade-info">
                         <span>Cost: <span id="viral-content-cost" class="cost">$100</span></span>
                         <span>Followers Gain: <span class="production">+50</span></span>
+                    </div>
+                    <div class="upgrade-info">
+                        <span>Time Required: <span class="production">20%</span></span>
+                        <span>Available: <span id="viral-content-available" class="status">Yes</span></span>
                     </div>
                     <button class="upgrade-btn" onclick="createViralContent()">Create Viral Content</button>
                 </div>
@@ -138,6 +208,10 @@
                         <span>Requires: <span class="cost">10 minutes material</span></span>
                         <span>Pay: <span class="production">$25</span></span>
                     </div>
+                    <div class="upgrade-info">
+                        <span>Time Required: <span class="production">30%</span></span>
+                        <span>Available: <span id="paid-gig-available" class="status">Yes</span></span>
+                    </div>
                     <button class="upgrade-btn" onclick="performPaidGig()">Perform Paid Gig</button>
                 </div>
                 
@@ -147,6 +221,10 @@
                     <div class="upgrade-info">
                         <span>Requires: <span class="cost">30 minutes material</span></span>
                         <span>Pay: <span class="production">$200</span></span>
+                    </div>
+                    <div class="upgrade-info">
+                        <span>Time Required: <span class="production">50%</span></span>
+                        <span>Available: <span id="paid-gig-available" class="status">Yes</span></span>
                     </div>
                     <button class="upgrade-btn" onclick="performAtFestival()">Perform at Festival</button>
                 </div>
@@ -167,6 +245,10 @@
                 <div class="stat">
                     <span class="stat-label">Career Level:</span>
                     <span id="career-level" class="stat-value">Open Mic Comedian</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Current Job:</span>
+                    <span id="current-job" class="stat-value">Unemployed</span>
                 </div>
             </div>
         </div>
