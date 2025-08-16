@@ -5,56 +5,57 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    color: #333;
+    font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+    background: #000;
+    color: #fff;
+    line-height: 1.4;
+    font-size: 14px;
+    padding: 20px;
 }
 
 .game-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
 }
 
 .game-header {
     text-align: center;
     margin-bottom: 30px;
-    color: white;
+    border-bottom: 1px solid #333;
+    padding-bottom: 20px;
 }
 
 .game-header h1 {
-    font-size: 3rem;
+    font-size: 2rem;
     margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    color: #fff;
 }
 
 .subtitle {
-    font-size: 1.2rem;
-    opacity: 0.9;
+    font-size: 1rem;
+    color: #ccc;
 }
 
 .stats-panel {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
+    margin-bottom: 30px;
+    border: 1px solid #333;
     padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    backdrop-filter: blur(10px);
 }
 
 .stats-panel h2 {
     margin-bottom: 15px;
-    color: #667eea;
-    font-size: 1.5rem;
+    color: #fff;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
 }
 
 .stat {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
+    padding: 8px 0;
+    border-bottom: 1px solid #222;
 }
 
 .stat:last-child {
@@ -62,52 +63,44 @@ body {
 }
 
 .stat-label {
-    font-weight: 600;
-    color: #555;
+    font-weight: normal;
+    color: #ccc;
 }
 
 .stat-value {
-    font-size: 1.2rem;
     font-weight: bold;
-    color: #667eea;
+    color: #fff;
 }
 
 .upgrades-panel {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
+    margin-bottom: 30px;
+    border: 1px solid #333;
     padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    backdrop-filter: blur(10px);
 }
 
 .upgrades-panel h2 {
     margin-bottom: 20px;
-    color: #667eea;
-    font-size: 1.5rem;
+    color: #fff;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
 }
 
 .upgrade {
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 20px;
+    background: #111;
+    border: 1px solid #333;
+    padding: 15px;
     margin-bottom: 15px;
-    border-left: 4px solid #667eea;
-    transition: transform 0.2s ease;
-}
-
-.upgrade:hover {
-    transform: translateY(-2px);
 }
 
 .upgrade h3 {
-    color: #667eea;
+    color: #fff;
     margin-bottom: 8px;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
 }
 
 .upgrade p {
-    color: #666;
+    color: #ccc;
     margin-bottom: 15px;
     font-size: 0.9rem;
 }
@@ -117,73 +110,134 @@ body {
     justify-content: space-between;
     margin-bottom: 15px;
     font-size: 0.9rem;
-    color: #555;
+    color: #ccc;
 }
 
 .upgrade-btn {
-    background: linear-gradient(45deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 25px;
+    background: #333;
+    color: #fff;
+    border: 1px solid #555;
+    padding: 8px 16px;
     cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
     width: 100%;
+    transition: background-color 0.2s ease;
 }
 
 .upgrade-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    background: #555;
 }
 
 .upgrade-btn:disabled {
-    background: #ccc;
+    background: #222;
+    color: #666;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+    border-color: #444;
 }
 
 .actions-panel {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
+    border: 1px solid #333;
     padding: 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    backdrop-filter: blur(10px);
 }
 
 .actions-panel h2 {
     margin-bottom: 20px;
-    color: #667eea;
-    font-size: 1.5rem;
+    color: #fff;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
 }
 
 .action-btn {
-    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 25px;
+    background: #333;
+    color: #fff;
+    border: 1px solid #555;
+    padding: 10px 20px;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
     margin-right: 15px;
     margin-bottom: 10px;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease;
 }
 
 .action-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+    background: #555;
+}
+
+/* Universal Paperclips style sections */
+.section {
+    margin-bottom: 30px;
+    border: 1px solid #333;
+    padding: 20px;
+}
+
+.section h2 {
+    margin-bottom: 15px;
+    color: #fff;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+}
+
+.section-content {
+    margin-top: 15px;
+}
+
+/* Button groups like in Universal Paperclips */
+.btn-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-group button {
+    background: #333;
+    color: #fff;
+    border: 1px solid #555;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    transition: background-color 0.2s ease;
+}
+
+.btn-group button:hover {
+    background: #555;
+}
+
+/* Status indicators */
+.status {
+    color: #0f0;
+    font-weight: bold;
+}
+
+.status.off {
+    color: #f00;
+}
+
+/* Cost displays */
+.cost {
+    color: #ff0;
+    font-weight: bold;
+}
+
+/* Production rates */
+.production {
+    color: #0ff;
+    font-weight: bold;
 }
 
 @media (max-width: 768px) {
-    .game-header h1 {
-        font-size: 2rem;
+    body {
+        padding: 10px;
+        font-size: 12px;
     }
     
-    .game-container {
-        padding: 15px;
+    .game-header h1 {
+        font-size: 1.5rem;
     }
     
     .upgrade-info {
@@ -194,5 +248,13 @@ body {
     .action-btn {
         width: 100%;
         margin-right: 0;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn-group button {
+        width: 100%;
     }
 } 
