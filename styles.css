@@ -5,151 +5,128 @@
 }
 
 body {
-    font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+    font-family: 'Courier New', monospace;
     background: #000;
     color: #fff;
-    line-height: 1.4;
     font-size: 14px;
-    padding: 20px;
+    line-height: 1.4;
 }
 
 .game-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
 }
 
-.game-header {
+.header {
+    grid-column: 1 / -1;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     border-bottom: 1px solid #333;
     padding-bottom: 20px;
 }
 
-.game-header h1 {
+.header h1 {
     font-size: 2rem;
     margin-bottom: 10px;
-    color: #fff;
 }
 
 .subtitle {
-    font-size: 1rem;
     color: #ccc;
 }
 
-.stats-panel {
-    margin-bottom: 30px;
+.section {
     border: 1px solid #333;
     padding: 20px;
+    margin-bottom: 20px;
+    background: #111;
 }
 
-.stats-panel h2 {
-    margin-bottom: 15px;
+.section h2 {
     color: #fff;
     font-size: 1.2rem;
+    margin-bottom: 15px;
     border-bottom: 1px solid #333;
     padding-bottom: 5px;
 }
 
-.stat {
+.resource {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
+    padding: 5px 0;
     border-bottom: 1px solid #222;
 }
 
-.stat:last-child {
+.resource:last-child {
     border-bottom: none;
 }
 
-.stat-label {
-    font-weight: normal;
+.resource-label {
     color: #ccc;
 }
 
-.stat-value {
+.resource-value {
+    color: #fff;
     font-weight: bold;
-    color: #fff;
 }
 
-.upgrades-panel {
-    margin-bottom: 30px;
-    border: 1px solid #333;
-    padding: 20px;
-}
-
-.upgrades-panel h2 {
-    margin-bottom: 20px;
-    color: #fff;
-    font-size: 1.2rem;
-    border-bottom: 1px solid #333;
-    padding-bottom: 5px;
-}
-
-.upgrade {
-    background: #111;
-    border: 1px solid #333;
+.action {
+    background: #222;
+    border: 1px solid #444;
     padding: 15px;
     margin-bottom: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
-.upgrade h3 {
+.action:hover {
+    background: #333;
+}
+
+.action.disabled {
+    background: #111;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.action h3 {
     color: #fff;
     margin-bottom: 8px;
-    font-size: 1.1rem;
 }
 
-.upgrade p {
+.action p {
     color: #ccc;
-    margin-bottom: 15px;
     font-size: 0.9rem;
+    margin-bottom: 10px;
 }
 
-.upgrade-info {
+.action-info {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15px;
-    font-size: 0.9rem;
-    color: #ccc;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
 }
 
-.upgrade-btn {
-    background: #333;
-    color: #fff;
-    border: 1px solid #555;
-    padding: 8px 16px;
-    cursor: pointer;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
-    width: 100%;
-    transition: background-color 0.2s ease;
+.cost {
+    color: #ff0;
 }
 
-.upgrade-btn:hover {
-    background: #555;
+.gain {
+    color: #0ff;
 }
 
-.upgrade-btn:disabled {
-    background: #222;
-    color: #666;
-    cursor: not-allowed;
-    border-color: #444;
+.status-available {
+    color: #0f0;
 }
 
-.actions-panel {
-    border: 1px solid #333;
-    padding: 20px;
+.status-unavailable {
+    color: #f00;
 }
 
-.actions-panel h2 {
-    margin-bottom: 20px;
-    color: #fff;
-    font-size: 1.2rem;
-    border-bottom: 1px solid #333;
-    padding-bottom: 5px;
-}
-
-.action-btn {
+.button {
     background: #333;
     color: #fff;
     border: 1px solid #555;
@@ -157,104 +134,125 @@ body {
     cursor: pointer;
     font-family: 'Courier New', monospace;
     font-size: 0.9rem;
-    margin-right: 15px;
-    margin-bottom: 10px;
-    transition: background-color 0.2s ease;
+    width: 100%;
+    transition: background 0.2s;
 }
 
-.action-btn:hover {
+.button:hover {
     background: #555;
 }
 
-/* Universal Paperclips style sections */
-.section {
-    margin-bottom: 30px;
-    border: 1px solid #333;
-    padding: 20px;
+.button:disabled {
+    background: #222;
+    color: #666;
+    cursor: not-allowed;
 }
 
-.section h2 {
-    margin-bottom: 15px;
-    color: #fff;
-    font-size: 1.2rem;
-    border-bottom: 1px solid #333;
-    padding-bottom: 5px;
-}
-
-.section-content {
-    margin-top: 15px;
-}
-
-/* Button groups like in Universal Paperclips */
-.btn-group {
-    display: flex;
+.job-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
+    margin-top: 10px;
 }
 
-.btn-group button {
-    background: #333;
-    color: #fff;
-    border: 1px solid #555;
-    padding: 6px 12px;
+.job {
+    background: #222;
+    border: 1px solid #444;
+    padding: 10px;
     cursor: pointer;
-    font-family: 'Courier New', monospace;
+    text-align: center;
+    transition: background 0.2s;
+}
+
+.job:hover {
+    background: #333;
+}
+
+.job.selected {
+    background: #444;
+    border-color: #666;
+}
+
+.job h4 {
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.job .job-stats {
     font-size: 0.8rem;
-    transition: background-color 0.2s ease;
+    color: #ccc;
 }
 
-.btn-group button:hover {
-    background: #555;
+.upgrade {
+    background: #222;
+    border: 1px solid #444;
+    padding: 15px;
+    margin-bottom: 10px;
 }
 
-/* Status indicators */
-.status {
-    color: #0f0;
+.upgrade h3 {
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.upgrade p {
+    color: #ccc;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.upgrade .cost {
     font-weight: bold;
 }
 
-.status.off {
+.upgrade.owned {
+    background: #113311;
+    border-color: #0f0;
+}
+
+.log {
+    grid-column: 1 / -1;
+    height: 150px;
+    overflow-y: auto;
+    background: #111;
+    border: 1px solid #333;
+    padding: 10px;
+    font-size: 0.8rem;
+}
+
+.log-entry {
+    margin-bottom: 5px;
+    padding: 2px 0;
+}
+
+.log-entry.success {
+    color: #0f0;
+}
+
+.log-entry.failure {
     color: #f00;
 }
 
-/* Cost displays */
-.cost {
-    color: #ff0;
-    font-weight: bold;
+.log-entry.info {
+    color: #ccc;
 }
 
-/* Production rates */
-.production {
-    color: #0ff;
-    font-weight: bold;
+.hidden {
+    display: none;
+}
+
+@media (max-width: 1200px) {
+    .game-container {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 @media (max-width: 768px) {
-    body {
-        padding: 10px;
-        font-size: 12px;
+    .game-container {
+        grid-template-columns: 1fr;
     }
     
-    .game-header h1 {
-        font-size: 1.5rem;
+    .job-selector {
+        grid-template-columns: 1fr;
     }
-    
-    .upgrade-info {
-        flex-direction: column;
-        gap: 5px;
-    }
-    
-    .action-btn {
-        width: 100%;
-        margin-right: 0;
-    }
-    
-    .btn-group {
-        flex-direction: column;
-    }
-    
-    .btn-group button {
-        width: 100%;
-    }
-} 
+}

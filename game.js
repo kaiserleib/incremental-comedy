@@ -1,413 +1,96 @@
-// Game state
+// Game State
 let gameState = {
+    // Resources
     money: 0,
-    material: 0,
-    laughsPerMinute: 0,
+    freeTime: 4, // hours
+    freshMaterial: 0, // minutes
+    totalMaterial: 0, // minutes (never decreases)
     followers: 0,
-    
-    // Time management
-    availableTime: 100, // Percentage of time available for comedy
-    currentJob: 'unemployed',
+    confidence: 50, // percentage
+    reputation: 0,
     
     // Income rates
-    moneyPerSecond: 0,
-    materialPerSecond: 0,
-    followersPerSecond: 0,
+    moneyPerSec: 0,
+    timePerSec: 1, // unemployed default
     
-    // Career progression
-    careerLevel: 'Open Mic Comedian',
-    totalGigs: 0,
-    totalEarnings: 0,
+    // Job
+    currentJob: 'unemployed',
     
-    // Job configurations
-    jobs: {
-        'unemployed': { name: 'Unemployed', pay: 0, timeRequired: 0, comedyTime: 100 },
-        'uber': { name: 'Uber Driver', pay: 0.005, timeRequired: 20, comedyTime: 80 },
-        'coffee': { name: 'Coffee Shop', pay: 0.015, timeRequired: 50, comedyTime: 50 },
-        'office': { name: 'Office Job', pay: 0.05, timeRequired: 80, comedyTime: 20 }
+    // Progress
+    gigsCompleted: 0,
+    careerLevel: 'Open Mic Rookie',
+    gamePhase: 1,
+    
+    // Automation
+    automation: {
+        writingRoutine: false,
+        dayPlanner: false,
+        socialScheduler: false,
+        bookingAgent: false
     },
     
-    // Costs (will increase with usage)
-    openMicCost: 5,
-    comedyClassesCost: 50,
-    writingTimeCost: 20,
-    socialPostCost: 2,
-    viralContentCost: 100,
+    // Unlocks
+    unlockedGigs: false,
+    unlockedAutomation: false,
+    unlockedVenues: false,
     
     lastSave: Date.now()
 };
 
-// DOM elements
-const moneyElement = document.getElementById('money');
-const materialElement = document.getElementById('material');
-const laughsPerMinuteElement = document.getElementById('laughs-per-minute');
-const followersElement = document.getElementById('followers');
-const availableTimeElement = document.getElementById('available-time');
-const moneyPerSecondElement = document.getElementById('money-per-second');
-const materialPerSecondElement = document.getElementById('material-per-second');
-const followersPerSecondElement = document.getElementById('followers-per-second');
-const currentJobElement = document.getElementById('current-job');
-const careerLevelElement = document.getElementById('career-level');
-const lastSaveElement = document.getElementById('last-save');
+// Job configurations
+const jobs = {
+    unemployed: { name: 'Unemployed', money: 0, time: 1 },
+    barista: { name: 'Barista', money: 2, time: 0.3 },
+    uber: { name: 'Uber Driver', money: 3, time: 0.5 },
+    office: { name: 'Office Job', money: 8, time: 0.1 }
+};
 
-// Initialize game
-function initGame() {
-    loadGame();
-    updateDisplay();
-    setInterval(gameLoop, 1000);
-    setInterval(autoSave, 30000); // Auto-save every 30 seconds
-}
-
-// Main game loop
-function gameLoop() {
-    // Passive income from current job
-    const currentJobConfig = gameState.jobs[gameState.currentJob];
-    if (currentJobConfig) {
-        gameState.money += currentJobConfig.pay;
-        gameState.totalEarnings += currentJobConfig.pay;
-        gameState.moneyPerSecond = currentJobConfig.pay;
+// Automation upgrades
+const automationUpgrades = {
+    writingRoutine: {
+        name: 'Writing Routine',
+        cost: 300,
+        description: 'Auto-writes material when free time ≥ 15h',
+        unlocked: () => gameState.totalMaterial >= 20
+    },
+    dayPlanner: {
+        name: 'Day Planner',
+        cost: 500,
+        description: 'Auto-attends open mics when material ≥ 5min AND time ≥ 10h',
+        unlocked: () => gameState.totalMaterial >= 50
+    },
+    socialScheduler: {
+        name: 'Social Media Scheduler',
+        cost: 750,
+        description: 'Auto-posts when fresh material ≥ 3min',
+        unlocked: () => gameState.followers >= 100
+    },
+    bookingAgent: {
+        name: 'Booking Agent',
+        cost: 2000,
+        description: 'Auto-applies for gigs when reputation ≥ 20',
+        unlocked: () => gameState.reputation >= 10
     }
-    
-    updateDisplay();
-}
+};
 
-// Update display
-function updateDisplay() {
-    moneyElement.textContent = formatMoney(gameState.money);
-    materialElement.textContent = formatNumber(gameState.material);
-    laughsPerMinuteElement.textContent = formatNumber(gameState.laughsPerMinute);
-    followersElement.textContent = formatNumber(gameState.followers);
-    availableTimeElement.textContent = `${gameState.availableTime}%`;
-    
-    moneyPerSecondElement.textContent = formatMoney(gameState.moneyPerSecond);
-    materialPerSecondElement.textContent = formatNumber(gameState.materialPerSecond);
-    followersPerSecondElement.textContent = formatNumber(gameState.followersPerSecond);
-    
-    // Update job statuses
-    updateJobStatuses();
-    
-    // Update current job display
-    currentJobElement.textContent = gameState.jobs[gameState.currentJob].name;
-    
-    // Update career level
-    careerLevelElement.textContent = gameState.careerLevel;
-    
-    // Update last save time
-    if (gameState.lastSave) {
-        const lastSaveDate = new Date(gameState.lastSave);
-        const now = new Date();
-        const diffMs = now - lastSaveDate;
-        const diffMins = Math.floor(diffMs / 60000);
-        
-        if (diffMins < 1) {
-            lastSaveElement.textContent = 'Just now';
-        } else if (diffMins < 60) {
-            lastSaveElement.textContent = `${diffMins} minutes ago`;
-        } else {
-            const diffHours = Math.floor(diffMins / 60);
-            lastSaveElement.textContent = `${diffHours} hours ago`;
-        }
-    }
-    
-    // Update button states based on available resources and time
-    updateButtonStates();
-}
+// DOM Elements
+const elements = {
+    money: document.getElementById('money'),
+    freeTime: document.getElementById('free-time'),
+    freshMaterial: document.getElementById('fresh-material'),
+    totalMaterial: document.getElementById('total-material'),
+    followers: document.getElementById('followers'),
+    confidence: document.getElementById('confidence'),
+    reputation: document.getElementById('reputation'),
+    moneyPerSec: document.getElementById('money-per-sec'),
+    timePerSec: document.getElementById('time-per-sec'),
+    careerLevel: document.getElementById('career-level'),
+    gamePhase: document.getElementById('game-phase'),
+    gigsCompleted: document.getElementById('gigs-completed'),
+    eventLog: document.getElementById('event-log')
+};
 
-// Update job statuses
-function updateJobStatuses() {
-    for (let jobId in gameState.jobs) {
-        const statusElement = document.getElementById(`${jobId}-status`);
-        if (statusElement) {
-            if (gameState.currentJob === jobId) {
-                statusElement.textContent = 'ON';
-                statusElement.className = 'status';
-            } else {
-                statusElement.textContent = 'OFF';
-                statusElement.className = 'status off';
-            }
-        }
-    }
-}
-
-// Update button states
-function updateButtonStates() {
-    // Open mic
-    const openMicBtn = document.querySelector('#open-mic .upgrade-btn');
-    const openMicAvailable = document.getElementById('open-mic-available');
-    if (openMicBtn && openMicAvailable) {
-        const canAfford = gameState.money >= gameState.openMicCost;
-        const hasTime = gameState.availableTime >= 10;
-        openMicBtn.disabled = !canAfford || !hasTime;
-        openMicAvailable.textContent = hasTime ? 'Yes' : 'No Time';
-        openMicAvailable.className = hasTime ? 'status' : 'status off';
-    }
-    
-    // Comedy classes
-    const comedyClassesBtn = document.querySelector('#comedy-classes .upgrade-btn');
-    const comedyClassesAvailable = document.getElementById('comedy-classes-available');
-    if (comedyClassesBtn && comedyClassesAvailable) {
-        const canAfford = gameState.money >= gameState.comedyClassesCost;
-        const hasTime = gameState.availableTime >= 15;
-        comedyClassesBtn.disabled = !canAfford || !hasTime;
-        comedyClassesAvailable.textContent = hasTime ? 'Yes' : 'No Time';
-        comedyClassesAvailable.className = hasTime ? 'status' : 'status off';
-    }
-    
-    // Writing time
-    const writingTimeBtn = document.querySelector('#writing-time .upgrade-btn');
-    const writingTimeAvailable = document.getElementById('writing-time-available');
-    if (writingTimeBtn && writingTimeAvailable) {
-        const canAfford = gameState.money >= gameState.writingTimeCost;
-        const hasTime = gameState.availableTime >= 25;
-        writingTimeBtn.disabled = !canAfford || !hasTime;
-        writingTimeAvailable.textContent = hasTime ? 'Yes' : 'No Time';
-        writingTimeAvailable.className = hasTime ? 'status' : 'status off';
-    }
-    
-    // Social post
-    const socialPostBtn = document.querySelector('#social-post .upgrade-btn');
-    const socialPostAvailable = document.getElementById('social-post-available');
-    if (socialPostBtn && socialPostAvailable) {
-        const canAfford = gameState.money >= gameState.socialPostCost;
-        const hasTime = gameState.availableTime >= 5;
-        socialPostBtn.disabled = !canAfford || !hasTime;
-        socialPostAvailable.textContent = hasTime ? 'Yes' : 'No Time';
-        socialPostAvailable.className = hasTime ? 'status' : 'status off';
-    }
-    
-    // Viral content
-    const viralContentBtn = document.querySelector('#viral-content .upgrade-btn');
-    const viralContentAvailable = document.getElementById('viral-content-available');
-    if (viralContentBtn && viralContentAvailable) {
-        const canAfford = gameState.money >= gameState.viralContentCost;
-        const hasTime = gameState.availableTime >= 20;
-        viralContentBtn.disabled = !canAfford || !hasTime;
-        viralContentAvailable.textContent = hasTime ? 'Yes' : 'No Time';
-        viralContentAvailable.className = hasTime ? 'status' : 'status off';
-    }
-    
-    // Paid gig
-    const paidGigBtn = document.querySelector('#paid-gig .upgrade-btn');
-    const paidGigAvailable = document.getElementById('paid-gig-available');
-    if (paidGigBtn && paidGigAvailable) {
-        const hasMaterial = gameState.material >= 10;
-        const hasTime = gameState.availableTime >= 30;
-        paidGigBtn.disabled = !hasMaterial || !hasTime;
-        paidGigAvailable.textContent = hasMaterial && hasTime ? 'Yes' : hasMaterial ? 'No Time' : 'No Material';
-        paidGigAvailable.className = hasMaterial && hasTime ? 'status' : 'status off';
-    }
-    
-    // Comedy festival
-    const festivalBtn = document.querySelector('#comedy-festival .upgrade-btn');
-    const festivalAvailable = document.getElementById('comedy-festival-available');
-    if (festivalBtn && festivalAvailable) {
-        const hasMaterial = gameState.material >= 30;
-        const hasTime = gameState.availableTime >= 50;
-        festivalBtn.disabled = !hasMaterial || !hasTime;
-        festivalAvailable.textContent = hasMaterial && hasTime ? 'Yes' : hasMaterial ? 'No Time' : 'No Material';
-        festivalAvailable.className = hasMaterial && hasTime ? 'status' : 'status off';
-    }
-}
-
-// Job switching function
-function switchJob(jobId) {
-    if (gameState.currentJob === jobId) return; // Already at this job
-    
-    gameState.currentJob = jobId;
-    const newJob = gameState.jobs[jobId];
-    gameState.availableTime = newJob.comedyTime;
-    
-    updateDisplay();
-    saveGame();
-    
-    showMessage(`Switched to ${newJob.name}! Available comedy time: ${newJob.comedyTime}%`);
-}
-
-// Comedy development functions
-function attendOpenMic() {
-    if (gameState.money >= gameState.openMicCost && gameState.availableTime >= 10) {
-        gameState.money -= gameState.openMicCost;
-        gameState.material += 1;
-        gameState.availableTime -= 10;
-        gameState.openMicCost = Math.floor(gameState.openMicCost * 1.1); // 10% increase
-        
-        updateDisplay();
-        saveGame();
-        showMessage('Attended open mic! Gained 1 minute of material. Used 10% time.');
-    }
-}
-
-function takeComedyClass() {
-    if (gameState.money >= gameState.comedyClassesCost && gameState.availableTime >= 15) {
-        gameState.money -= gameState.comedyClassesCost;
-        gameState.laughsPerMinute += 0.1;
-        gameState.availableTime -= 15;
-        gameState.comedyClassesCost = Math.floor(gameState.comedyClassesCost * 1.2); // 20% increase
-        
-        updateDisplay();
-        saveGame();
-        showMessage('Took comedy class! Laughs per minute increased. Used 15% time.');
-    }
-}
-
-function writeMaterial() {
-    if (gameState.money >= gameState.writingTimeCost && gameState.availableTime >= 25) {
-        gameState.money -= gameState.writingTimeCost;
-        gameState.material += 5;
-        gameState.availableTime -= 25;
-        gameState.writingTimeCost = Math.floor(gameState.writingTimeCost * 1.15); // 15% increase
-        
-        updateDisplay();
-        saveGame();
-        showMessage('Wrote new material! Gained 5 minutes of material. Used 25% time.');
-    }
-}
-
-// Social media functions
-function makeSocialPost() {
-    if (gameState.money >= gameState.socialPostCost && gameState.availableTime >= 5) {
-        gameState.money -= gameState.socialPostCost;
-        gameState.followers += 5;
-        gameState.availableTime -= 5;
-        gameState.socialPostCost = Math.floor(gameState.socialPostCost * 1.05); // 5% increase
-        
-        updateDisplay();
-        saveGame();
-        showMessage('Made social media post! Gained 5 followers. Used 5% time.');
-    }
-}
-
-function createViralContent() {
-    if (gameState.money >= gameState.viralContentCost && gameState.availableTime >= 20) {
-        gameState.money -= gameState.viralContentCost;
-        gameState.followers += 50;
-        gameState.availableTime -= 20;
-        gameState.viralContentCost = Math.floor(gameState.viralContentCost * 1.3); // 30% increase
-        
-        updateDisplay();
-        saveGame();
-        showMessage('Created viral content! Gained 50 followers. Used 20% time.');
-    }
-}
-
-// Performance functions
-function performPaidGig() {
-    if (gameState.material >= 10 && gameState.availableTime >= 30) {
-        gameState.material -= 10;
-        gameState.money += 25;
-        gameState.totalEarnings += 25;
-        gameState.totalGigs += 1;
-        gameState.availableTime -= 30;
-        
-        updateDisplay();
-        saveGame();
-        showMessage('Performed paid gig! Earned $25. Used 30% time.');
-        checkCareerProgression();
-    }
-}
-
-function performAtFestival() {
-    if (gameState.material >= 30 && gameState.availableTime >= 50) {
-        gameState.material -= 30;
-        gameState.money += 200;
-        gameState.totalEarnings += 200;
-        gameState.totalGigs += 1;
-        gameState.availableTime -= 50;
-        
-        updateDisplay();
-        saveGame();
-        showMessage('Performed at festival! Earned $200. Used 50% time.');
-        checkCareerProgression();
-    }
-}
-
-// Career progression
-function checkCareerProgression() {
-    if (gameState.totalEarnings >= 1000 && gameState.careerLevel === 'Open Mic Comedian') {
-        gameState.careerLevel = 'Paid Comedian';
-        showMessage('🎉 Career milestone: You\'re now a Paid Comedian!');
-    } else if (gameState.totalEarnings >= 5000 && gameState.careerLevel === 'Paid Comedian') {
-        gameState.careerLevel = 'Professional Comedian';
-        showMessage('🎉 Career milestone: You\'re now a Professional Comedian!');
-    } else if (gameState.totalEarnings >= 20000 && gameState.careerLevel === 'Professional Comedian') {
-        gameState.careerLevel = 'Headliner';
-        showMessage('🎉 Career milestone: You\'re now a Headliner!');
-    } else if (gameState.totalEarnings >= 100000 && gameState.careerLevel === 'Headliner') {
-        gameState.careerLevel = 'Comedy Legend';
-        showMessage('🎉 Career milestone: You\'re now a Comedy Legend!');
-    }
-    
-    updateDisplay();
-}
-
-// Utility functions
-function showMessage(message) {
-    const messageDiv = document.createElement('div');
-    messageDiv.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #000;
-        color: #fff;
-        border: 2px solid #333;
-        padding: 15px;
-        font-family: 'Courier New', monospace;
-        z-index: 1000;
-        max-width: 300px;
-        animation: slideIn 0.5s ease-out;
-    `;
-    messageDiv.textContent = message;
-    
-    // Add CSS animation
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-    `;
-    document.head.appendChild(style);
-    
-    document.body.appendChild(messageDiv);
-    
-    // Auto-remove after 3 seconds
-    setTimeout(() => {
-        if (document.body.contains(messageDiv)) {
-            document.body.removeChild(messageDiv);
-        }
-    }, 3000);
-}
-
-// Save/Load functions
-function saveGame() {
-    gameState.lastSave = Date.now();
-    localStorage.setItem('comedyCareer', JSON.stringify(gameState));
-}
-
-function loadGame() {
-    const saved = localStorage.getItem('comedyCareer');
-    if (saved) {
-        try {
-            const loadedState = JSON.parse(saved);
-            gameState = { ...gameState, ...loadedState };
-        } catch (e) {
-            console.error('Failed to load saved game:', e);
-        }
-    }
-}
-
-function autoSave() {
-    saveGame();
-}
-
-// Formatting functions
-function formatMoney(amount) {
-    if (amount < 1000) return `$${amount.toFixed(2)}`;
-    if (amount < 1000000) return `$${(amount / 1000).toFixed(1)}K`;
-    if (amount < 1000000000) return `$${(amount / 1000000).toFixed(1)}M`;
-    return `$${(amount / 1000000000).toFixed(1)}B`;
-}
-
+// Utility Functions
 function formatNumber(num) {
     if (num < 1000) return Math.floor(num);
     if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
@@ -415,5 +98,418 @@ function formatNumber(num) {
     return (num / 1000000000).toFixed(1) + 'B';
 }
 
-// Initialize when page loads
-document.addEventListener('DOMContentLoaded', initGame); 
+function formatMoney(amount) {
+    return '$' + formatNumber(amount);
+}
+
+function formatTime(hours) {
+    if (hours < 1) return Math.floor(hours * 60) + 'm';
+    return hours.toFixed(1) + 'h';
+}
+
+function random(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function logEvent(message, type = 'info') {
+    const logEntry = document.createElement('div');
+    logEntry.className = `log-entry ${type}`;
+    logEntry.textContent = message;
+    elements.eventLog.appendChild(logEntry);
+    elements.eventLog.scrollTop = elements.eventLog.scrollHeight;
+    
+    // Keep log manageable
+    if (elements.eventLog.children.length > 50) {
+        elements.eventLog.removeChild(elements.eventLog.firstChild);
+    }
+}
+
+// Game Actions
+function writeMaterial() {
+    if (gameState.freeTime >= 2) {
+        gameState.freeTime -= 2;
+        const materialGained = random(1, 3);
+        gameState.freshMaterial += materialGained;
+        gameState.totalMaterial += materialGained;
+        
+        logEvent(`Wrote ${materialGained} minutes of fresh material`, 'success');
+        updateDisplay();
+        checkUnlocks();
+    }
+}
+
+function attendOpenMic() {
+    if (gameState.freeTime >= 3 && gameState.freshMaterial >= 1) {
+        gameState.freeTime -= 3;
+        const materialUsed = Math.min(gameState.freshMaterial, 5);
+        gameState.freshMaterial -= materialUsed;
+        
+        // Success based on confidence
+        const successChance = gameState.confidence / 100;
+        const success = Math.random() < successChance;
+        
+        if (success) {
+            const confidenceGain = random(5, 15);
+            const followersGain = random(2, 8);
+            gameState.confidence = Math.min(100, gameState.confidence + confidenceGain);
+            gameState.followers += followersGain;
+            gameState.reputation += 0.5;
+            
+            logEvent(`Great set! +${confidenceGain}% confidence, +${followersGain} followers`, 'success');
+        } else {
+            const confidenceLoss = random(5, 10);
+            gameState.confidence = Math.max(10, gameState.confidence - confidenceLoss);
+            
+            logEvent(`Tough crowd... -${confidenceLoss}% confidence`, 'failure');
+        }
+        
+        updateDisplay();
+        checkUnlocks();
+    }
+}
+
+function postContent() {
+    if (gameState.freeTime >= 1 && gameState.freshMaterial >= 1) {
+        gameState.freeTime -= 1;
+        gameState.freshMaterial -= 1;
+        
+        const followersGain = random(5, 15);
+        gameState.followers += followersGain;
+        
+        // Chance for viral content
+        if (Math.random() < 0.1) {
+            const viralBonus = random(50, 200);
+            gameState.followers += viralBonus;
+            logEvent(`Content went viral! +${followersGain + viralBonus} followers total`, 'success');
+        } else {
+            logEvent(`Posted content. +${followersGain} followers`, 'success');
+        }
+        
+        updateDisplay();
+        checkUnlocks();
+    }
+}
+
+function applyForGigs() {
+    if (gameState.freeTime >= 1) {
+        gameState.freeTime -= 1;
+        
+        // Success based on reputation and followers
+        const successChance = Math.min(0.8, (gameState.reputation + gameState.followers / 100) / 20);
+        
+        if (Math.random() < successChance) {
+            const payment = random(50, 200);
+            gameState.money += payment;
+            gameState.gigsCompleted++;
+            gameState.reputation += 2;
+            
+            logEvent(`Booked a gig! Earned ${formatMoney(payment)}`, 'success');
+        } else {
+            logEvent('No callbacks this time. Keep building your rep!', 'info');
+        }
+        
+        updateDisplay();
+        checkUnlocks();
+    }
+}
+
+// Job System
+function selectJob(jobType) {
+    gameState.currentJob = jobType;
+    const job = jobs[jobType];
+    gameState.moneyPerSec = job.money;
+    gameState.timePerSec = job.time;
+    
+    // Update UI
+    document.querySelectorAll('.job').forEach(j => j.classList.remove('selected'));
+    document.querySelector(`[data-job="${jobType}"]`).classList.add('selected');
+    
+    logEvent(`Switched to: ${job.name}`, 'info');
+    updateDisplay();
+}
+
+// Automation
+function buyAutomation(upgradeKey) {
+    const upgrade = automationUpgrades[upgradeKey];
+    if (gameState.money >= upgrade.cost && !gameState.automation[upgradeKey]) {
+        gameState.money -= upgrade.cost;
+        gameState.automation[upgradeKey] = true;
+        
+        logEvent(`Purchased: ${upgrade.name}`, 'success');
+        updateDisplay();
+        updateAutomationUI();
+    }
+}
+
+function runAutomation() {
+    // Writing Routine
+    if (gameState.automation.writingRoutine && gameState.freeTime >= 15) {
+        gameState.freeTime -= 2;
+        const materialGained = random(1, 3);
+        gameState.freshMaterial += materialGained;
+        gameState.totalMaterial += materialGained;
+    }
+    
+    // Day Planner
+    if (gameState.automation.dayPlanner && gameState.freeTime >= 10 && gameState.freshMaterial >= 5) {
+        gameState.freeTime -= 3;
+        const materialUsed = Math.min(gameState.freshMaterial, 5);
+        gameState.freshMaterial -= materialUsed;
+        
+        const successChance = gameState.confidence / 100;
+        if (Math.random() < successChance) {
+            const confidenceGain = random(3, 8);
+            const followersGain = random(1, 5);
+            gameState.confidence = Math.min(100, gameState.confidence + confidenceGain);
+            gameState.followers += followersGain;
+            gameState.reputation += 0.3;
+        }
+    }
+    
+    // Social Scheduler
+    if (gameState.automation.socialScheduler && gameState.freshMaterial >= 3) {
+        gameState.freshMaterial -= 1;
+        const followersGain = random(3, 8);
+        gameState.followers += followersGain;
+    }
+    
+    // Booking Agent
+    if (gameState.automation.bookingAgent && gameState.reputation >= 20) {
+        const successChance = Math.min(0.6, gameState.reputation / 50);
+        if (Math.random() < successChance) {
+            const payment = random(30, 100);
+            gameState.money += payment;
+            gameState.gigsCompleted++;
+            gameState.reputation += 1;
+        }
+    }
+}
+
+// UI Updates
+function updateDisplay() {
+    elements.money.textContent = formatMoney(gameState.money);
+    elements.freeTime.textContent = formatTime(gameState.freeTime);
+    elements.freshMaterial.textContent = gameState.freshMaterial + ' min';
+    elements.totalMaterial.textContent = gameState.totalMaterial + ' min';
+    elements.followers.textContent = formatNumber(gameState.followers);
+    elements.confidence.textContent = Math.floor(gameState.confidence) + '%';
+    elements.reputation.textContent = formatNumber(gameState.reputation);
+    elements.moneyPerSec.textContent = formatMoney(gameState.moneyPerSec);
+    elements.timePerSec.textContent = formatTime(gameState.timePerSec);
+    elements.careerLevel.textContent = gameState.careerLevel;
+    elements.gamePhase.textContent = getPhaseText();
+    elements.gigsCompleted.textContent = gameState.gigsCompleted;
+    
+    updateActionStates();
+    updateCareerLevel();
+}
+
+function updateActionStates() {
+    // Write Material
+    const writeBtn = document.querySelector('#write-material-action .button');
+    const writeAvailable = document.getElementById('write-available');
+    if (gameState.freeTime >= 2) {
+        writeBtn.disabled = false;
+        writeAvailable.textContent = 'Available';
+        writeAvailable.className = 'status-available';
+    } else {
+        writeBtn.disabled = true;
+        writeAvailable.textContent = 'Need 2 hours';
+        writeAvailable.className = 'status-unavailable';
+    }
+    
+    // Open Mic
+    const micBtn = document.querySelector('#open-mic-action .button');
+    const micAvailable = document.getElementById('open-mic-available');
+    if (gameState.freeTime >= 3 && gameState.freshMaterial >= 1) {
+        micBtn.disabled = false;
+        micAvailable.textContent = 'Available';
+        micAvailable.className = 'status-available';
+    } else {
+        micBtn.disabled = true;
+        if (gameState.freeTime < 3) {
+            micAvailable.textContent = 'Need 3 hours';
+        } else {
+            micAvailable.textContent = 'Need material';
+        }
+        micAvailable.className = 'status-unavailable';
+    }
+    
+    // Post Content
+    const postBtn = document.querySelector('#post-content-action .button');
+    const postAvailable = document.getElementById('post-available');
+    if (gameState.freeTime >= 1 && gameState.freshMaterial >= 1) {
+        postBtn.disabled = false;
+        postAvailable.textContent = 'Available';
+        postAvailable.className = 'status-available';
+    } else {
+        postBtn.disabled = true;
+        if (gameState.freeTime < 1) {
+            postAvailable.textContent = 'Need 1 hour';
+        } else {
+            postAvailable.textContent = 'Need material';
+        }
+        postAvailable.className = 'status-unavailable';
+    }
+    
+    // Apply for Gigs
+    if (gameState.unlockedGigs) {
+        const gigsBtn = document.querySelector('#apply-gigs-action .button');
+        const gigsAvailable = document.getElementById('gigs-available');
+        if (gameState.freeTime >= 1) {
+            gigsBtn.disabled = false;
+            gigsAvailable.textContent = 'Available';
+            gigsAvailable.className = 'status-available';
+        } else {
+            gigsBtn.disabled = true;
+            gigsAvailable.textContent = 'Need 1 hour';
+            gigsAvailable.className = 'status-unavailable';
+        }
+    }
+}
+
+function updateAutomationUI() {
+    if (!gameState.unlockedAutomation) return;
+    
+    const container = document.getElementById('automation-upgrades');
+    container.innerHTML = '';
+    
+    Object.entries(automationUpgrades).forEach(([key, upgrade]) => {
+        if (upgrade.unlocked()) {
+            const div = document.createElement('div');
+            div.className = `upgrade ${gameState.automation[key] ? 'owned' : ''}`;
+            
+            const canAfford = gameState.money >= upgrade.cost;
+            const isOwned = gameState.automation[key];
+            
+            div.innerHTML = `
+                <h3>${upgrade.name}</h3>
+                <p>${upgrade.description}</p>
+                <div class="cost">Cost: ${formatMoney(upgrade.cost)}</div>
+                ${!isOwned ? 
+                    `<button class="button" onclick="buyAutomation('${key}')" ${!canAfford ? 'disabled' : ''}>Purchase</button>` :
+                    '<div style="color: #0f0;">OWNED</div>'
+                }
+            `;
+            
+            container.appendChild(div);
+        }
+    });
+}
+
+function getPhaseText() {
+    if (gameState.gamePhase === 1) return 'Manual Grind';
+    if (gameState.gamePhase === 2) return 'Automation Unlocked';
+    if (gameState.gamePhase === 3) return 'Comedy Empire';
+    return 'Transcendence';
+}
+
+function updateCareerLevel() {
+    let newLevel = 'Open Mic Rookie';
+    
+    if (gameState.totalMaterial >= 100) newLevel = 'Comedy Veteran';
+    else if (gameState.totalMaterial >= 50) newLevel = 'Rising Comedian';
+    else if (gameState.totalMaterial >= 20) newLevel = 'Regular Performer';
+    else if (gameState.totalMaterial >= 10) newLevel = 'Open Mic Regular';
+    
+    if (newLevel !== gameState.careerLevel) {
+        gameState.careerLevel = newLevel;
+        logEvent(`Career advancement: ${newLevel}!`, 'success');
+    }
+}
+
+function checkUnlocks() {
+    // Unlock gigs
+    if (!gameState.unlockedGigs && gameState.followers >= 50) {
+        gameState.unlockedGigs = true;
+        document.getElementById('apply-gigs-action').classList.remove('hidden');
+        logEvent('New action unlocked: Apply for Gigs!', 'success');
+    }
+    
+    // Unlock automation
+    if (!gameState.unlockedAutomation && gameState.totalMaterial >= 20) {
+        gameState.unlockedAutomation = true;
+        gameState.gamePhase = 2;
+        document.getElementById('automation-section').classList.remove('hidden');
+        document.getElementById('upgrades-section').classList.remove('hidden');
+        logEvent('Phase 2 unlocked: Automation available!', 'success');
+        updateAutomationUI();
+    }
+    
+    // Show reputation when relevant
+    if (gameState.reputation >= 1) {
+        document.getElementById('reputation-resource').classList.remove('hidden');
+    }
+}
+
+// Game Loop
+function gameLoop() {
+    // Passive income
+    gameState.money += gameState.moneyPerSec;
+    gameState.freeTime += gameState.timePerSec;
+    
+    // Run automation
+    runAutomation();
+    
+    updateDisplay();
+}
+
+// Job selection event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.job').forEach(job => {
+job.addEventListener('click', () => {
+    selectJob(job.dataset.job);
+});
+    });
+});
+
+// Save/Load
+function saveGame() {
+    gameState.lastSave = Date.now();
+    localStorage.setItem('comedyIncremental', JSON.stringify(gameState));
+}
+
+function loadGame() {
+    const saved = localStorage.getItem('comedyIncremental');
+    if (saved) {
+        try {
+            const loadedState = JSON.parse(saved);
+            Object.assign(gameState, loadedState);
+            
+            // Update job selection
+            selectJob(gameState.currentJob);
+            
+            // Restore UI state
+            if (gameState.unlockedGigs) {
+                document.getElementById('apply-gigs-action').classList.remove('hidden');
+            }
+            if (gameState.unlockedAutomation) {
+                document.getElementById('automation-section').classList.remove('hidden');
+                document.getElementById('upgrades-section').classList.remove('hidden');
+                updateAutomationUI();
+            }
+            if (gameState.reputation >= 1) {
+                document.getElementById('reputation-resource').classList.remove('hidden');
+            }
+            
+            logEvent('Game loaded successfully', 'info');
+        } catch (e) {
+            logEvent('Save file corrupted, starting fresh', 'failure');
+        }
+    }
+}
+
+// Initialize game
+function initGame() {
+    loadGame();
+    updateDisplay();
+    
+    // Start game loops
+    setInterval(gameLoop, 1000); // Main loop every second
+    setInterval(saveGame, 10000); // Auto-save every 10 seconds
+    
+    logEvent('Comedy Incremental started! Write some material to begin.', 'info');
+}
+
+// Start the game when DOM is ready
+document.addEventListener('DOMContentLoaded', initGame);
